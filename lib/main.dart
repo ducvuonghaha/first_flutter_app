@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fruit_flutter/fruit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'fruit.dart';
 
 void main() {
   runApp(MyApp());
@@ -65,6 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  //editText
+  TextEditingController username = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+  String usernameERR = 'Tài khoản không hợp lệ';
+  String passERR = 'Mật khẩu phải trên 6 ký tự';
+  bool userInvalid = true;
+  bool passInvalid = true;
+
   // void _incrementCounter() {
   //   setState(() {
   //     // This call to setState tells the Flutter framework that something has
@@ -85,116 +95,129 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+      // appBar: AppBar(
+      //   // Here we take the value from the MyHomePage object that was created by
+      //   // the App.build method, and use it to set our appbar title.
+      //   title: Text(widget.title),
+      // ),
       body: Container(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
         constraints: BoxConstraints.expand(),
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-                width: 80,
-                height: 80,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Color(0xffd8d8d8)),
-                child: Image.asset('assets/images/ducvuong.jpg')),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Nguyễn Đức Vượng\nWelcome Back',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 20, 0, 0),
-              child: TextField(
-                  decoration: InputDecoration(
-                      labelText: "Username",
-                      labelStyle:
-                          TextStyle(color: Color(0xff888888), fontSize: 15))),
-            ),
-            Stack(
-              alignment: AlignmentDirectional.centerEnd,
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.fromLTRB(30, 40, 30, 0),
+            child: Column(
+              // Column is also a layout widget. It takes a list of children and
+              // arranges them vertically. By default, it sizes itself to fit its
+              // children horizontally, and tries to be as tall as its parent.
+              //
+              // Invoke "debug painting" (press "p" in the console, choose the
+              // "Toggle Debug Paint" action from the Flutter Inspector in Android
+              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+              // to see the wireframe for each widget.
+              //
+              // Column has various properties to control how it sizes itself and
+              // how it positions its children. Here we use mainAxisAlignment to
+              // center the children vertically; the main axis here is the vertical
+              // axis because Columns are vertical (the cross axis would be
+              // horizontal).
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Container(
+                    width: 80,
+                    height: 80,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Color(0xffd8d8d8)),
+                    child: FlutterLogo()),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Hello\nWelcome Back',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 20, 0, 0),
                   child: TextField(
-                      obscureText: _obscureText,
+                      controller: username,
                       decoration: InputDecoration(
-                          labelText: "Password",
+                          labelText: "Username",
+                          errorText: userInvalid ? usernameERR : null,
                           labelStyle: TextStyle(
                               color: Color(0xff888888), fontSize: 15))),
                 ),
-                FlatButton(
-                  onPressed: _toggle,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                    child: new Text(_obscureText ? "SHOW" : "HIDE",
+                Stack(
+                  alignment: AlignmentDirectional.centerEnd,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
+                      child: TextField(
+                          controller: password,
+                          obscureText: _obscureText,
+                          decoration: InputDecoration(
+                              labelText: "Password",
+                              errorText: passInvalid ? passERR : null,
+                              labelStyle: TextStyle(
+                                  color: Color(0xff888888), fontSize: 15))),
+                    ),
+                    FlatButton(
+                      onPressed: _toggle,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                        child: new Text(_obscureText ? "SHOW" : "HIDE",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 60),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      onPressed: onSignInClick,
+                      child: Text(
+                        "SIGN IN",
                         style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12)),
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15, bottom: 0),
+                  child: Container(
+                      height: 70,
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            "NEW USER? SIGN UP",
+                            style: TextStyle(color: Colors.grey, fontSize: 15),
+                          ),
+                          Text(
+                            "FORGOT PASSWORD?",
+                            style: TextStyle(color: Colors.blue, fontSize: 15),
+                          )
+                        ],
+                      )),
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 60),
-              child: SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: RaisedButton(
-                  color: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  onPressed: onSignInClick,
-                  child: Text(
-                    "SIGN IN",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15, bottom: 0),
-              child: Container(
-                  height: 70,
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("NEW USER? SIGN UP", style: TextStyle(color: Colors.grey, fontSize: 15),),
-                      Text("FORGOT PASSWORD?", style: TextStyle(color: Colors.blue, fontSize: 15),)
-                    ],
-                  )
-              ),
-            ),
-          ],
+          ),
         ),
       ),
       // floatingActionButton: FloatingActionButton(
@@ -205,12 +228,101 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void onSignInClick() async {
-    // var navigationResult =
-    await Navigator.push(context, new MaterialPageRoute(builder: (context) => Fruit()));
-    // if (navigationResult == true) {
-    //   showDialog(context: context,
-    //   builder: (context) => AlertDialog(title: Text("Chuyển màn hình thành công"),));
-    // }
+  void onSignInClick() {
+    setState(() {
+      final String user = 'ducvuong@fruit.com';
+      final String pass = 'meovuong201099';
+
+      if (username.text.contains('@fruit.com')) {
+        userInvalid = false;
+      }
+
+      if (password.text.length >= 6) {
+        passInvalid = false;
+      }
+
+      if (!username.text.contains('@fruit.com')) {
+        userInvalid = true;
+      } else if (password.text.length < 6) {
+        passInvalid = true;
+      } else if (!(username.text == user)) {
+        showToastErr("Không có tài khoản " + username.text);
+      } else if (!(password.text == pass)) {
+        showToastErr("Sai mật khẩu");
+      } else {
+        Navigator.push(
+            context, new MaterialPageRoute(builder: (context) => Fruit()));
+
+        showToastSuccess("Đăng nhập thành công");
+
+        showDialogg(context, "Xin chào " + username.text + " !");
+      }
+    });
+  }
+
+  void showDialogg(BuildContext context, String text) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.blue,
+              title: Text(
+                text,
+                style: TextStyle(color: Colors.white),
+              ),
+            ));
+  }
+
+  void showToastErr(String text) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.redAccent,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.cancel),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(text),
+        ],
+      ),
+    );
+
+    FToast fToast = FToast(context);
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
+    );
+  }
+
+  void showToastSuccess(String text) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.green,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.check),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(text),
+        ],
+      ),
+    );
+
+    FToast fToast = FToast(context);
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
+    );
   }
 }
