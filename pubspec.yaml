@@ -22,7 +22,7 @@ environment:
 
 dependencies:
   fluttertoast: ^7.0.4
-  flappy_search_bar: 1.4.1
+  model: ^0.0.3
 
   flutter:
     sdk: flutter

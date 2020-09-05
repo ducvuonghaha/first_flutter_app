@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'fruit.dart';
 
 void main() {
@@ -70,10 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
   //editText
   TextEditingController username = new TextEditingController();
   TextEditingController password = new TextEditingController();
-  String usernameERR = 'Tài khoản không hợp lệ';
-  String passERR = 'Mật khẩu phải trên 6 ký tự';
-  bool userInvalid = true;
-  bool passInvalid = true;
+  String usernameERR;
+  String passERR;
+
+  // bool userInvalid = true;
+  // bool passInvalid = true;
 
   // void _incrementCounter() {
   //   setState(() {
@@ -88,6 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    username.text = 'ducvuong@fruit.com';
+    password.text = 'meovuong201099';
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -104,9 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         constraints: BoxConstraints.expand(),
+        color: Colors.white,
         child: SingleChildScrollView(
           child: Container(
-            padding: EdgeInsets.fromLTRB(30, 40, 30, 0),
+            padding: EdgeInsets.fromLTRB(30, 50, 30, 0),
             child: Column(
               // Column is also a layout widget. It takes a list of children and
               // arranges them vertically. By default, it sizes itself to fit its
@@ -123,21 +127,15 @@ class _MyHomePageState extends State<MyHomePage> {
               // axis because Columns are vertical (the cross axis would be
               // horizontal).
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                    width: 80,
-                    height: 80,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Color(0xffd8d8d8)),
-                    child: FlutterLogo()),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Hello\nWelcome Back',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
-                  ),
+                    width: 240,
+                    height: 150,
+                    child: Image.asset('assets/images/fruit_logo.jpg')),
+                Text(
+                  'Welcome Back !',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 20, 0, 0),
@@ -145,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: username,
                       decoration: InputDecoration(
                           labelText: "Username",
-                          errorText: userInvalid ? usernameERR : null,
+                          errorText: usernameERR,
                           labelStyle: TextStyle(
                               color: Color(0xff888888), fontSize: 15))),
                 ),
@@ -159,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           obscureText: _obscureText,
                           decoration: InputDecoration(
                               labelText: "Password",
-                              errorText: passInvalid ? passERR : null,
+                              errorText: passERR,
                               labelStyle: TextStyle(
                                   color: Color(0xff888888), fontSize: 15))),
                     ),
@@ -167,22 +165,28 @@ class _MyHomePageState extends State<MyHomePage> {
                       onPressed: _toggle,
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                        child: new Text(_obscureText ? "SHOW" : "HIDE",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12)),
+                        child: new Image.asset(
+                          _obscureText
+                              ? 'assets/images/eye.png'
+                              : 'assets/images/remove_eye.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                        // style: TextStyle(
+                        //     color: Colors.blue,
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 12)),
                       ),
                     ),
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 60),
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 20),
                   child: SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: RaisedButton(
-                      color: Colors.blue,
+                      color: Colors.green,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8))),
                       onPressed: onSignInClick,
@@ -196,25 +200,39 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15, bottom: 0),
-                  child: Container(
-                      height: 70,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "NEW USER? SIGN UP",
-                            style: TextStyle(color: Colors.grey, fontSize: 15),
+                Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          "FORGOT PASSWORD?",
+                          style: TextStyle(color: Colors.green, fontSize: 15),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 80, 0, 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "NEW USER?",
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 15),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Text(
+                                  "SIGN UP",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "FORGOT PASSWORD?",
-                            style: TextStyle(color: Colors.blue, fontSize: 15),
-                          )
-                        ],
-                      )),
-                ),
+                        ),
+                      ],
+                    )),
               ],
             ),
           ),
@@ -234,33 +252,34 @@ class _MyHomePageState extends State<MyHomePage> {
       final String pass = 'meovuong201099';
 
       if (username.text.contains('@fruit.com')) {
-        userInvalid = false;
+        usernameERR = null;
       }
 
-      if (password.text.length >= 6) {
-        passInvalid = false;
+      if (password.text.length > 6) {
+        passERR = null;
       }
 
-      if (!username.text.contains('@fruit.com')) {
-        userInvalid = true;
-      } else if (password.text.length < 6) {
-        passInvalid = true;
-      } else if (!(username.text == user)) {
-        showToastErr("Không có tài khoản " + username.text);
-      } else if (!(password.text == pass)) {
-        showToastErr("Sai mật khẩu");
+      if (username.text == '' || password.text == '') {
+        showToastWarning('Chưa nhập tên tài khoản hoặc mật khẩu');
+      } else if (!username.text.contains('@fruit.com')) {
+        usernameERR = 'Tài khoản không hợp lệ';
+        showToastWarning('Tài khoản phải có đuôi @fruit.com');
+      } else if (password.text.length <= 6) {
+        passERR = 'Mật khẩu phải trên 6 ký tự';
+      } else if (!(username.text == user) || !(password.text == pass)) {
+        showToastErr("Sai tài khoản hoặc mật khẩu");
       } else {
         Navigator.push(
             context, new MaterialPageRoute(builder: (context) => Fruit()));
 
         showToastSuccess("Đăng nhập thành công");
 
-        showDialogg(context, "Xin chào " + username.text + " !");
+        getDialog(context, "Xin chào " + username.text + " !");
       }
     });
   }
 
-  void showDialogg(BuildContext context, String text) {
+  void getDialog(BuildContext context, String text) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -314,6 +333,37 @@ class _MyHomePageState extends State<MyHomePage> {
             width: 12.0,
           ),
           Text(text),
+        ],
+      ),
+    );
+
+    FToast fToast = FToast(context);
+    fToast.showToast(
+      child: toast,
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 1),
+    );
+  }
+
+  void showToastWarning(String text) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.yellow,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.warning),
+          SizedBox(
+            width: 12.0,
+          ),
+          SizedBox(
+              width: 200,
+              child: Text(
+                text,
+              )),
         ],
       ),
     );

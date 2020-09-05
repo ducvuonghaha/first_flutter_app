@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fruit_flutter/fruit.dart';
+import 'package:fruit_flutter/fruits_model.dart';
 
 void main() {
   runApp(Search());
@@ -34,22 +34,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> names = ['Apples', 'Avocado', 'Blackberries', 'Apples'];
-
-  List<String> descriptions = [
-    'Green or red, they are generally round and tasty',
-    'One of the oiliest, richest fruits money can buy',
-    'Find them on back-roads and fences in the Northwest',
-    'Green or red, they are generally round and tasty'
-  ];
-
-  List<String> images = [
-    'apple.jpeg',
-    'avocado.jpg',
-    'blackberries.jpg',
-    'apple.jpeg'
-  ];
-
   ScrollController scrollController = new ScrollController();
 
   @override
@@ -74,9 +58,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: SearchBar(onSearch: ,onItemFound: ,),
-      // ),
+      appBar: AppBar(
+        title: Text(
+          'Search some vegetables...',
+          style: TextStyle(fontSize: 18),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              showSearch(context: context, delegate: DataSearch());
+            },
+          )
+        ],
+      ),
+      drawer: Drawer(),
       body: Container(
         child: SingleChildScrollView(
           child: Column(
@@ -86,9 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 new ListView.builder(
                   // reverse: true,
                   controller: scrollController,
-                  itemBuilder: (_, int index) => EachList(this.names[index],
-                      this.descriptions[index], this.images[index]),
-                  itemCount: this.names.length,
+                  itemBuilder: (_, int index) => EachList(fruits[index]),
+                  itemCount: fruits.length,
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                 ),
@@ -104,11 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.search,
-              color: Colors.orange,
+              color: Colors.blue,
             ),
             title: Text(
               'Search',
-              style: TextStyle(color: Colors.orange, fontSize: 16),
+              style: TextStyle(color: Colors.blue, fontSize: 16),
             ),
           ),
           BottomNavigationBarItem(
@@ -118,7 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
     );
@@ -126,13 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class EachList extends StatelessWidget {
-  final String name;
-  final String description;
+  final Fruits fruits;
 
-  final String path = 'assets/images/';
-  final String images;
-
-  EachList(this.name, this.description, this.images);
+  EachList(this.fruits);
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +132,7 @@ class EachList extends StatelessWidget {
         children: <Widget>[
           Container(
             child: Image.asset(
-              path + images,
+              fruits.image,
               width: 80,
               height: 100,
             ),
@@ -155,28 +145,187 @@ class EachList extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 0, 0, 8),
                   child: new Text(
-                    name,
+                    fruits.name,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                   child: SizedBox(
-                    width: 293,
+                    width: 230,
                     child: new Text(
-                      description,
+                      fruits.descriptions,
                       style: TextStyle(
                         fontSize: 16,
                       ),
-                      textAlign: TextAlign.justify,
+                      // textAlign: TextAlign.justify,
                     ),
                   ),
                 ),
               ],
             ),
           ),
+          Icon(
+            Icons.favorite_border,
+          ),
         ],
       ),
+    );
+  }
+}
+
+class DataSearch extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    //action for app bar
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    //leading icon on the left of the app bar
+    return IconButton(
+      icon: AnimatedIcon(
+          icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    for (int i = 0; i < fruits.length; i++) {
+      if (query == fruits[i].name) {
+        return Card(
+          child: Container(
+            child: Row(
+              children: <Widget>[
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Container(
+                      child: Image.asset(
+                        fruits[i].image,
+                        width: 350,
+                        height: 250,
+                      ),
+                    ),
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade200.withOpacity(0.7)),
+                          width: 350,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 8, 10, 10),
+                                child: Text(
+                                  fruits[i].name,
+                                  style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 10, left: 10, bottom: 10),
+                                child: Text(
+                                  fruits[i].descriptions,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+    for (int i = 0; i < fruits.length; i++) {
+      if (query != fruits[i].name) {
+        return Center(
+          child: Container(
+            height: 100,
+            width: 100,
+            child: Card(
+              color: Colors.redAccent,
+              child: Center(
+                child: Text('Nothing'),
+              ),
+            ),
+          ),
+        );
+      } else if (query == '') {
+        return Center(
+          child: Container(
+            height: 100,
+            width: 100,
+            child: Card(
+              color: Colors.redAccent,
+              child: Center(
+                child: Text('Nothing'),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    //show when someone search for something
+    final suggestionList = query.isEmpty
+        ? fruits
+        : fruits.where((p) => p.name.startsWith(query)).toList();
+
+    return ListView.builder(
+      itemBuilder: (context, final index) => ListTile(
+        onTap: () {
+          query = suggestionList[index].name;
+          showResults(context);
+        },
+        title: RichText(
+            text: TextSpan(
+                text: suggestionList[index].name.substring(0, query.length),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                children: [
+              TextSpan(
+                  text: suggestionList[index].name.substring(query.length),
+                  style: TextStyle(color: Colors.grey))
+            ])),
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Image.asset(
+            suggestionList[index].image,
+            width: 80,
+            height: 100,
+          ),
+        ),
+      ),
+      itemCount: suggestionList.length,
     );
   }
 }

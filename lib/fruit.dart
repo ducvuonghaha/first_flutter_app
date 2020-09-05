@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
+import 'package:fruit_flutter/fruits_model.dart';
 import 'package:fruit_flutter/search.dart';
 
 void main() {
@@ -33,21 +34,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<String> names = ['Apples', 'Avocado', 'Backberries', 'Apples'];
-
-  List<String> descriptions = [
-    'Green or red, they are generally round and tasty',
-    'One of the oiliest, richest fruits money can buy',
-    'Find them on backroads and fences in the Northwest',
-    'Green or red, they are generally round and tasty'
-  ];
-
-  List<String> images = [
-    'apple.jpeg',
-    'avocado.jpg',
-    'blackberries.jpg',
-    'apple.jpeg'
-  ];
+  // List<String> names = ['Apples', 'Avocado', 'Blackberries', 'Apples'];
+  //
+  // List<String> descriptions = [
+  //   'Green or red, they are generally round and tasty',
+  //   'One of the oiliest, richest fruits money can buy',
+  //   'Find them on back-roads and fences in the Northwest',
+  //   'Green or red, they are generally round and tasty'
+  // ];
+  //
+  // List<String> images = [
+  //   'apple.jpeg',
+  //   'avocado.jpg',
+  //   'blackberries.jpg',
+  //   'apple.jpeg'
+  // ];
 
   ScrollController scrollController = new ScrollController();
 
@@ -103,9 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 new ListView.builder(
                   // reverse: true,
                   controller: scrollController,
-                  itemBuilder: (_, int index) => EachList(this.names[index],
-                      this.descriptions[index], this.images[index]),
-                  itemCount: this.names.length,
+                  itemBuilder: (_, int index) => EachList(fruits[index]),
+                  itemCount: fruits.length,
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                 ),
@@ -132,7 +132,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
     );
@@ -140,13 +139,15 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class EachList extends StatelessWidget {
-  final String name;
-  final String description;
+  // final String name;
+  // final String description;
+  //
+  // final String path = 'assets/images/';
+  // final String images;
 
-  final String path = 'assets/images/';
-  final String images;
+  final Fruits fruits;
 
-  EachList(this.name, this.description, this.images);
+  EachList(this.fruits);
 
   @override
   Widget build(BuildContext context) {
@@ -160,8 +161,8 @@ class EachList extends StatelessWidget {
               children: <Widget>[
                 new Container(
                   child: Image.asset(
-                    path + images,
-                    width: 400,
+                    fruits.image,
+                    width: 350,
                     height: 250,
                   ),
                 ),
@@ -171,7 +172,7 @@ class EachList extends StatelessWidget {
                     child: new Container(
                       decoration: new BoxDecoration(
                           color: Colors.grey.shade200.withOpacity(0.8)),
-                      width: 400,
+                      width: 350,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +180,7 @@ class EachList extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
                             child: new Text(
-                              name,
+                              fruits.name,
                               style: TextStyle(
                                   fontSize: 28, fontWeight: FontWeight.bold),
                             ),
@@ -188,7 +189,7 @@ class EachList extends StatelessWidget {
                             padding: const EdgeInsets.only(
                                 right: 10, left: 10, bottom: 10),
                             child: new Text(
-                              description,
+                              fruits.descriptions,
                               style: TextStyle(
                                 fontSize: 16,
                               ),
