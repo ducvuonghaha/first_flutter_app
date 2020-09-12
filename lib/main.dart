@@ -3,32 +3,26 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fruit_flutter/database/databaseUser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'fruit.dart';
+import 'model/user_model.dart';
+import 'signup.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var username = preferences.getString('username');
+  runApp(MaterialApp(home: username == null ? MyApp() : Fruit()));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
+        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'demo login'),
@@ -39,15 +33,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -55,10 +40,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // int _counter = 0;
+  DBUsers dbUsers = new DBUsers();
+  Users users;
 
   //show/hide password
   bool _obscureText = true;
+  int updateIndex;
 
   void _toggle() {
     setState(() {
@@ -72,35 +59,28 @@ class _MyHomePageState extends State<MyHomePage> {
   String usernameERR;
   String passERR;
 
-  // bool userInvalid = true;
-  // bool passInvalid = true;
+  TextEditingController newpassword = new TextEditingController();
+  TextEditingController renewpassword = new TextEditingController();
+  TextEditingController usernameUD = new TextEditingController();
 
-  // void _incrementCounter() {
-  //   setState(() {
-  //     // This call to setState tells the Flutter framework that something has
-  //     // changed in this State, which causes it to rerun the build method below
-  //     // so that the display can reflect the updated values. If we changed
-  //     // _counter without calling setState(), then the build method would not be
-  //     // called again, and so nothing would appear to happen.
-  //     _counter++;
-  //   });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    dbUsers = new DBUsers();
+  }
+
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   dbUsers = new DBUsers();
   // }
 
   @override
   Widget build(BuildContext context) {
-    username.text = 'ducvuong@fruit.com';
-    password.text = 'meovuong201099';
-
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       // appBar: AppBar(
-      //   // Here we take the value from the MyHomePage object that was created by
-      //   // the App.build method, and use it to set our appbar title.
       //   title: Text(widget.title),
       // ),
       body: Container(
@@ -112,20 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Container(
             padding: EdgeInsets.fromLTRB(30, 50, 30, 0),
             child: Column(
-              // Column is also a layout widget. It takes a list of children and
-              // arranges them vertically. By default, it sizes itself to fit its
-              // children horizontally, and tries to be as tall as its parent.
-              //
-              // Invoke "debug painting" (press "p" in the console, choose the
-              // "Toggle Debug Paint" action from the Flutter Inspector in Android
-              // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-              // to see the wireframe for each widget.
-              //
-              // Column has various properties to control how it sizes itself and
-              // how it positions its children. Here we use mainAxisAlignment to
-              // center the children vertically; the main axis here is the vertical
-              // axis because Columns are vertical (the cross axis would be
-              // horizontal).
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
@@ -169,8 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           _obscureText
                               ? 'assets/images/eye.png'
                               : 'assets/images/remove_eye.png',
-                          width: 30,
-                          height: 30,
+                          width: 20,
+                          height: 20,
                         ),
                         // style: TextStyle(
                         //     color: Colors.blue,
@@ -185,29 +151,195 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: SizedBox(
                     width: double.infinity,
                     height: 56,
-                    child: RaisedButton(
-                      color: Colors.green,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8))),
-                      onPressed: onSignInClick,
-                      child: Text(
-                        "SIGN IN",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                    child: FutureBuilder(
+                        future: dbUsers.getUsers(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<Users> usersList = snapshot.data;
+                            return RaisedButton(
+                              color: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              onPressed: () {
+                                setState(() {
+                                  // showToastSuccess(usersList[1].password);
+                                  onSignInClick(usersList);
+                                });
+                              },
+                              child: Text(
+                                "SIGN IN",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          }
+                          return CircularProgressIndicator();
+                        }),
                   ),
                 ),
                 Container(
                     width: double.infinity,
                     child: Column(
                       children: <Widget>[
-                        Text(
-                          "FORGOT PASSWORD?",
-                          style: TextStyle(color: Colors.green, fontSize: 15),
-                        ),
+                        FutureBuilder(
+                            future: dbUsers.getUsers(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                List<Users> usersList = snapshot.data;
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            Expanded(
+                                          child: SizedBox(
+                                            height: 500,
+                                            child: AlertDialog(
+                                              contentPadding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      15, 15, 15, 15),
+                                              backgroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                              ),
+                                              content:
+                                                  Builder(builder: (context) {
+                                                // Get available height and width of the build area of this widget. Make a choice depending on the size.
+                                                var height =
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .height;
+                                                var width =
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width;
+                                                usernameUD.text = username.text;
+                                                return SingleChildScrollView(
+                                                  child: Container(
+                                                    height: height - 310,
+                                                    width: width - 20,
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 20),
+                                                          child: Text(
+                                                            'Forgot your password ?',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .green,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 20),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 20),
+                                                          child: TextField(
+                                                            controller:
+                                                                usernameUD,
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    hintText:
+                                                                        'Your account'),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 20),
+                                                          child: TextField(
+                                                            controller:
+                                                                newpassword,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText:
+                                                                  'New password',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 20),
+                                                          child: TextField(
+                                                            controller:
+                                                                renewpassword,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText:
+                                                                  'Re-password',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  top: 20.0),
+                                                          child: RaisedButton(
+                                                            color: Colors.green,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            8))),
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                changePassword(
+                                                                    usersList);
+                                                              });
+                                                            },
+                                                            child: Text(
+                                                              "CHANGE",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    });
+                                  },
+                                  child: Text(
+                                    "FORGOT PASSWORD?",
+                                    style: TextStyle(
+                                        color: Colors.green, fontSize: 15),
+                                  ),
+                                );
+                              }
+                              return Center(child: CircularProgressIndicator());
+                            }),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 80, 0, 10),
                           child: Row(
@@ -220,12 +352,20 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 5),
-                                child: Text(
-                                  "SIGN UP",
-                                  style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) => SignUp()));
+                                  },
+                                  child: Text(
+                                    "SIGN UP",
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ],
@@ -238,19 +378,40 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: Icon(Icons.add),
-      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
-  void onSignInClick() {
+  void changePassword(List<Users> userList) {
     setState(() {
-      final String user = 'ducvuong@fruit.com';
-      final String pass = 'meovuong201099';
+      if (newpassword.text == '' || renewpassword.text == '') {
+        showToastWarning('Chưa điền đủ thông tin');
+      } else if (newpassword.text != renewpassword.text) {
+        showToastWarning('Chưa trùng mật khẩu');
+      } else if (newpassword.text.length <= 6) {
+        showToastWarning('Mật khẩu phải nhiều hơn 6 ký tự');
+      } else {
+        for (int i = 0; i < userList.length; i++) {
+          if (userList[i].username == usernameUD.text) {
+            users = userList[i];
+            users.password = newpassword.text;
+            dbUsers.updateUser(users);
+            showToastSuccess('Đổi mật khẩu thành công');
+            newpassword.clear();
+            renewpassword.clear();
+            users = null;
+            userList.clear();
+            break;
+          } else if (i == userList.length - 1) {
+            showToastWarning('Không có tài khoản này');
+            break;
+          }
+        }
+      }
+    });
+  }
 
+  void onSignInClick(List<Users> usersList) {
+    setState(() async {
       if (username.text.contains('@fruit.com')) {
         usernameERR = null;
       }
@@ -266,16 +427,26 @@ class _MyHomePageState extends State<MyHomePage> {
         showToastWarning('Tài khoản phải có đuôi @fruit.com');
       } else if (password.text.length <= 6) {
         passERR = 'Mật khẩu phải trên 6 ký tự';
-      } else if (!(username.text == user) || !(password.text == pass)) {
-        showToastErr("Sai tài khoản hoặc mật khẩu");
       } else {
-        Navigator.push(
-            context, new MaterialPageRoute(builder: (context) => Fruit()));
+        for (int i = 0; i < usersList.length; i++) {
+          if (usersList[i].username == username.text &&
+              usersList[i].password == password.text) {
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            preferences.setString('username', usersList[i].username);
 
-        showToastSuccess("Đăng nhập thành công");
-
-        getDialog(context, "Xin chào " + username.text + " !");
+            Navigator.push(
+                context, new MaterialPageRoute(builder: (context) => Fruit()));
+            showToastSuccess("Đăng nhập thành công");
+            getDialog(context, "Xin chào " + usersList[i].username + " !");
+            break;
+          } else if (i == usersList.length - 1) {
+            showToastWarning("Sai tài khoản hoặc mật khẩu");
+            break;
+          }
+        }
       }
+      // showToastSuccess(usersList.length.toString());
     });
   }
 
@@ -283,7 +454,7 @@ class _MyHomePageState extends State<MyHomePage> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.green,
               title: Text(
                 text,
                 style: TextStyle(color: Colors.white),
