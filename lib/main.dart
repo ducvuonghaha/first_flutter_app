@@ -13,7 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   var username = preferences.getString('username');
-  runApp(MaterialApp(home: username == null ? MyApp() : Fruit()));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -437,8 +437,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
             Navigator.push(
                 context, new MaterialPageRoute(builder: (context) => Fruit()));
+
             showToastSuccess("Đăng nhập thành công");
+
             getDialog(context, "Xin chào " + usersList[i].username + " !");
+            username.text = '';
+            password.text = '';
             break;
           } else if (i == usersList.length - 1) {
             showToastWarning("Sai tài khoản hoặc mật khẩu");
@@ -481,7 +485,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
@@ -508,7 +513,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
@@ -539,7 +545,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,

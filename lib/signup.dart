@@ -309,6 +309,11 @@ class _SignUpPageState extends State<SignUpPage> {
             dbUsers.insertUser(users);
             usersList.clear();
             showToastSuccess('Thêm tài khoản thành công');
+            username.text = '';
+            password.text = '';
+            fullname.text = '';
+            email.text = '';
+            phone.text = '';
             break;
           }
         }
@@ -353,7 +358,8 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
         child: toast,
         gravity: ToastGravity.BOTTOM,
@@ -383,7 +389,8 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
         child: toast,
         gravity: ToastGravity.BOTTOM,

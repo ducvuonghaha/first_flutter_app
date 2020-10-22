@@ -287,7 +287,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,
@@ -318,7 +319,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,

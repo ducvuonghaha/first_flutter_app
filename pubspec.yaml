@@ -9,7 +9,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  fluttertoast: ^7.0.4
+  fluttertoast: ^7.1.1
   model: ^0.0.3
 
   flutter:

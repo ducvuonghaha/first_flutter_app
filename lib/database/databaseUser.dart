@@ -9,7 +9,7 @@ class DBUsers {
   Future openDB() async {
     if (_database == null) {
       _database = await openDatabase(
-          join(await getDatabasesPath(), 'users4.db'),
+          join(await getDatabasesPath(), 'users5.db'),
           version: 1, onCreate: (Database db, int version) async {
         await db.execute(
             "CREATE TABLE USERS (idU INTEGER PRIMARY KEY autoincrement, usernameU TEXT, passwordU TEXT, fullnameU TEXT, phoneU TEXT, emailU TEXT)");

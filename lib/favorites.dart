@@ -211,7 +211,8 @@ class _MyHomePageState extends State<FavoritesPage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
+    fToast.init(context);
     fToast.showToast(
       child: toast,
       gravity: ToastGravity.BOTTOM,

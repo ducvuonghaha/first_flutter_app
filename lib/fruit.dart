@@ -386,12 +386,17 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    FToast fToast = FToast(context);
+    FToast fToast = FToast();
     fToast.showToast(
-      child: toast,
-      gravity: ToastGravity.BOTTOM,
-      toastDuration: Duration(seconds: 1),
-    );
+        child: toast,
+        gravity: ToastGravity.BOTTOM,
+        positionedToastBuilder: (context, child) {
+          return Positioned(
+            child: child,
+            top: 16.0,
+            left: 16.0,
+          );
+        });
   }
 }
 //
